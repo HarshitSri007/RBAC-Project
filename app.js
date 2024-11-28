@@ -5,9 +5,8 @@ const app = express();
 const bcrypt = require('bcrypt');
 
 
-app.use(express.json());  // Middleware to parse JSON
+app.use(express.json());  
 
-// MongoDB connection
 mongoose.connect('mongodb://localhost:27017/mydb', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -15,29 +14,29 @@ mongoose.connect('mongodb://localhost:27017/mydb', {
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.log('MongoDB connection error: ', err));
 
-// POST register route
+
 app.post('/api/register', async (req, res) => {
-    // Log the incoming request body to verify what is being sent
+    
     console.log('Request body:', req.body);
   
     try {
       const { username, email, password, role } = req.body;
   
-      // Validate that all required fields are present
+     
       if (!username || !email || !password || !role) {
         return res.status(400).json({ message: 'Missing required fields' });
       }
   
-      // Check if user already exists by email
+     
       const userExists = await User.findOne({ email });
       if (userExists) {
         return res.status(400).json({ message: 'User already exists' });
       }
   
-      // Hash the password (ensure bcrypt is set up correctly)
+      
       const hashedPassword = await bcrypt.hash(password, 10);
   
-      // Create a new user and save it to the database
+      
       const user = new User({
         username,
         email,
@@ -45,7 +44,7 @@ app.post('/api/register', async (req, res) => {
         role
       });
   
-      // Save user to the database
+      
       await user.save();
   
       return res.status(201).json({ message: 'User registered successfully' });
